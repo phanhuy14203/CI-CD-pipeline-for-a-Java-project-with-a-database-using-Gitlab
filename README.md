@@ -1,4 +1,4 @@
-# Deploying-Java-Spring-Boot-project-with-database-on-Ubuntu-Linux
+# Deploying-Java-project-with-database-on-Ubuntu-Linux
 ## 📌Install Java 17 and check 
 ```
 apt install openjdk-17-jdk openjdk-17-jre
