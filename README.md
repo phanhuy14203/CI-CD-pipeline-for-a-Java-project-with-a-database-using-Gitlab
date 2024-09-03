@@ -26,6 +26,7 @@ systemctl stop mariadb
 ```
 nano /etc/mysql/mariadb.conf.d/50-server.cnf
 ```
+Edit the line with the following content:
 ```
 bind-address=0.0.0.0
 ```
