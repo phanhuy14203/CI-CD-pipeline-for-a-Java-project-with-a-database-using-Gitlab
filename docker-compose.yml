@@ -1,0 +1,29 @@
+services:
+  db1:
+    image: mariadb:10.6
+    volumes:
+      - /db/mariadb-1:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 2x
+    ports:
+      - "3307:3306"
+    container_name: mariadb-1
+    restart: always
+  app-backend-3:
+    image: shoeshop:v3
+    ports:
+      - "8093:8080"
+    container_name: shoeshop-3
+    restart: always
+  app-backend-2:
+    image: shoeshop:v2
+    ports:
+      - "8092:8080"
+    container_name: shoeshop-2
+    restart: always
+  app-backend-1:
+    image: shoeshop:v1
+    ports:
+      - "8091:8080"
+    container_name: shoeshop-1
+    restart: always
