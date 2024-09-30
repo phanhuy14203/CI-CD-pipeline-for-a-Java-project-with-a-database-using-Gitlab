@@ -1,0 +1,44 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    tags:
+      - '*'  # Kích hoạt khi có tag mới
+
+env:
+  PROJECT_NAME: shoe-ShoppingCart
+  VERSION: 0.0.1-SNAPSHOT
+  PROJECT_USER: shoeshop
+  PROJECT_PATH: /datas/${{ secrets.PROJECT_USER }}/  # Sử dụng secret cho người dùng
+
+jobs:
+  build:
+    runs-on: self-hosted  # Chạy trên self-hosted runner
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build Project
+        run: mvn install -DskipTests=true
+
+  deploy:
+    runs-on: self-hosted  # Chạy trên self-hosted runner
+    needs: build
+    if: github.actor == 'phanhuy'  # Chỉ chạy nếu người dùng là 'phanhuy'
+    steps:
+      - name: Deploy application
+        run: |
+          echo "Deploying application..."
+          sudo cp target/${{ env.PROJECT_NAME }}-${{ env.VERSION }}.jar $PROJECT_PATH
+          sudo chown -R $PROJECT_USER: $PROJECT_PATH
+          sudo kill -9 $(ps -ef | grep ${PROJECT_NAME}-${VERSION}.jar | grep -v grep | awk '{print $2}')
+          sudo su $PROJECT_USER -c "cd $PROJECT_PATH; nohup java -jar ${PROJECT_NAME}-${VERSION}.jar > nohup.out 2>&1 &"
+
+  showlog:
+    runs-on: self-hosted  # Chạy trên self-hosted runner
+    needs: deploy
+    if: github.actor == 'phanhuy'  # Chỉ chạy nếu người dùng là 'phanhuy'
+    steps:
+      - name: Show Log
+        run: |
+          sudo su $PROJECT_USER -c "cd $PROJECT_PATH; tail -n 10000 nohup.out"
