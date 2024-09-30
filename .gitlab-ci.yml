@@ -21,6 +21,7 @@ deploy:
     stage: deploy
     variables:
         GIT_STRATEGY: none
+    when: manual
     script:
         - ls 
         - pwd
@@ -36,6 +37,7 @@ showlog:
     stage: checklog
     variables:
         GIT_STRATEGY: none
+    when: manual
     script:
         - sudo su $projectuser -c "cd $projectpath;tail -n 10000 nohup.out"
     tags:
